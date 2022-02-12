@@ -10,11 +10,9 @@ class ValidatedPhoneTest {
 
     @Test
     void shouldBePresentCustomAnnotation() throws NoSuchFieldException {
-        String expected = ValidatedPhone.class.getDeclaredField("phone")
-                                              .getAnnotation(ContactNumberConstraint.class)
-                                              .toString();
+        boolean annotationPresent = ValidatedPhone.class.getDeclaredField("phone")
+                                                        .isAnnotationPresent(ContactNumberConstraint.class);
 
-        assertThat(expected, is("@velykyi.vladyslav.annotations.annotation.validation.ContactNumberConstraint(" +
-                                "message=\"Invalid phone number\", groups={}, payload={})"));
+        assertThat(annotationPresent, is(true));
     }
 }

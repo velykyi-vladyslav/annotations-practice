@@ -12,6 +12,7 @@ import velykyi.vladyslav.annotations.annotation.Traceable;
 import velykyi.vladyslav.annotations.dto.ValidatedPhone;
 
 import javax.servlet.http.HttpServletRequest;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,8 +51,8 @@ class AnnotationDemoControllerTest {
         mockMvc.perform(post("/annotations/validatePhoneNumber")
                         .contentType(APPLICATION_JSON)
                         .content(mapObjectToJsonString(validatedPhone)))
-                .andExpect(status().isOk())
-                .andExpect(content().string("valid phone number"));
+               .andExpect(status().isOk())
+               .andExpect(content().string("valid phone number"));
     }
 
     @ParameterizedTest
@@ -63,18 +64,17 @@ class AnnotationDemoControllerTest {
         mockMvc.perform(post("/annotations/validatePhoneNumber")
                         .contentType(APPLICATION_JSON)
                         .content(mapObjectToJsonString(validatedPhone)))
-                .andExpect(status().isOk())
-                .andExpect(content().string("invalid phone number"));
+               .andExpect(status().isOk())
+               .andExpect(content().string("invalid phone number"));
     }
 
     @Test
     void shouldBePresentCustomAnnotation() throws NoSuchMethodException {
-        String expected = AnnotationDemoController.class.getMethod("processAnnotationAspect",
-                                                                   Map.class,
-                                                                   HttpServletRequest.class)
-                                                        .getAnnotation(Traceable.class)
-                                                        .toString();
+        boolean annotationPresent = AnnotationDemoController.class.getMethod("processAnnotationAspect",
+                                                                             Map.class,
+                                                                             HttpServletRequest.class)
+                                                                   .isAnnotationPresent(Traceable.class);
 
-        assertThat(expected, is("@velykyi.vladyslav.annotations.annotation.Traceable()"));
+        assertThat(annotationPresent, is(true));
     }
 }
